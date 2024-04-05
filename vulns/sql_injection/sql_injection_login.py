@@ -17,10 +17,10 @@ def sql_injection_login_api(request, app):
     password = form.get('password')
     password_hash = _hash_password(password)
 
-    sql = f"SELECT * FROM users WHERE username='{username}' AND password='{password_hash}'"
+    sql_str = f"SELECT * FROM users WHERE username='%{username}' AND password='{password_hash}'"
     flask.render_template_string(username)
 
-    db_result = app.db_helper.execute_read(sql)
+    db_result = app.db_helper.execute_read(sql_str)
 
     user = list(
         map(
@@ -35,7 +35,7 @@ def sql_injection_login_api(request, app):
 
     return render_template(
         'sql_injection/login.html',
-        sql=sql,
+        sql=sql_str,
         logged=user is not None
     )
 
